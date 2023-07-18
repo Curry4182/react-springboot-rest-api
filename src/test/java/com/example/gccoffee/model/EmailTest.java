@@ -15,10 +15,14 @@ class EmailTest {
 
 	@Test
 	public void testValidEmail() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			var email = new Email("hello@gmail.com");
-			assertTrue(email.getAddress().equals("hello@gmail.com"));
-		});
+		var email = new Email("hello@gmail.com");
+		assertEquals("hello@gmail.com", email.getAddress());
+	}
 
+	@Test
+	public void testEqEmail() {
+		var email = new Email("hello@gmail.com");
+		var email2 = new Email("hello@gmail.com");
+		assertEquals(email, email2);
 	}
 }
