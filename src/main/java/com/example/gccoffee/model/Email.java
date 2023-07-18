@@ -20,6 +20,10 @@ public class Email {
 		return Pattern.matches("\\b[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}\\b", address);
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
