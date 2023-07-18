@@ -5,12 +5,14 @@ import static com.example.gccoffee.Utils.*;
 import java.nio.ByteBuffer;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -53,22 +55,41 @@ public class productJdbcRepository implements ProductRepository{
 
 	@Override
 	public Optional<Product> findById(UUID productId) {
-		return Optional.empty();
+		try {
+			return Optional.ofNullable(
+				jdbcTemplate.queryForObject("SELECT * FROM products WHERE product_id = UNHEX(REPLACE(:productId, '-', ''))",
+				Collections.singletonMap("productId", productId.toString().getBytes()), productRowMapper)
+			);
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		}
+
 	}
 
 	@Override
 	public Optional<Product> findByName(String productName) {
-		return Optional.empty();
+		try {
+			return Optional.ofNullable(
+				jdbcTemplate.queryForObject("SELECT * FROM products WHERE product_name = :productName",
+					Collections.singletonMap("productName", productName), productRowMapper)
+			);
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		}
 	}
 
 	@Override
 	public List<Product> findByCategory(Category category) {
-		return null;
+		return jdbcTemplate.query(
+			"SELECT * FROM products WHERE category = :category",
+			Collections.singletonMap("category", category.toString()),
+			productRowMapper
+		);
 	}
 
 	@Override
 	public void deleteAll() {
-
+		jdbcTemplate.update("DELETE FROM products", Collections.emptyMap());
 	}
 
 	private static final RowMapper<Product> productRowMapper = (resultSet, i) ->

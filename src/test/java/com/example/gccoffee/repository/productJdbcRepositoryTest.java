@@ -28,6 +28,7 @@ import com.wix.mysql.EmbeddedMysql;
 import com.wix.mysql.config.Charset;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @SpringBootTest
@@ -42,11 +43,44 @@ class productJdbcRepositoryTest {
 	private Product newProduct = new Product(UUID.randomUUID(), "new-product", Category.COFFEE_BEAN_PACKAGE, 1000);
 
 	@Test
+	@Order(0)
+	@DisplayName("상품을 모두 제거 할 수 있다.")
+	void deleteAll() {
+		repository.deleteAll();
+		List<Product> all = repository.findAll();
+		assertThat(all.isEmpty(), is(true));
+	}
+
+	@Test
 	@Order(1)
 	@DisplayName("상품을 추가할 수 있다.")
 	void testInsert() {
 		repository.insert(newProduct);
 		List<Product> all = repository.findAll();
 		assertThat(all.isEmpty(), is(false));
+	}
+
+	@Test
+	@Order(2)
+	@DisplayName("상품을 이름으로 조회할 수 있다.")
+	void testFindByName() {
+		Optional<Product> product = repository.findByName(newProduct.getProductName());
+		assertThat(product.isEmpty(), is(false));
+	}
+
+	@Test
+	@Order(3)
+	@DisplayName("상품을 아이디로 조회할 수 있다.")
+	void testFindById() {
+		Optional<Product> product = repository.findById(newProduct.getProductId());
+		assertThat(product.isEmpty(), is(false));
+	}
+
+	@Test
+	@Order(4)
+	@DisplayName("상품을 카테고리로 조회할 수 있다.")
+	void testFindByCategory() {
+		List<Product> product = repository.findByCategory(Category.COFFEE_BEAN_PACKAGE);
+		assertThat(product.isEmpty(), is(false));
 	}
 }
