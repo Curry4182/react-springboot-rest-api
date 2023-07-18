@@ -1,7 +1,17 @@
 package com.example.gccoffee;
 
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 @SpringBootApplication
 public class GcCoffeeApplication {
@@ -10,4 +20,28 @@ public class GcCoffeeApplication {
 		SpringApplication.run(GcCoffeeApplication.class, args);
 	}
 
+	@Bean
+	public DataSource dataSource() throws SQLException {
+		var dataSource = DataSourceBuilder.create()
+			.url("jdbc:mysql://localhost/order_mgmt")
+			.username("root")
+			.password("root1234!")
+			.type(HikariDataSource.class)
+			.build();
+
+		dataSource.setMaximumPoolSize(100);
+		dataSource.setMinimumIdle(10);
+
+		return dataSource;
+	}
+
+	@Bean
+	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+		return new JdbcTemplate(dataSource);
+	}
+
+	@Bean
+	public NamedParameterJdbcTemplate namedParameterJdbcTemplate(JdbcTemplate jdbcTemplate) {
+		return new NamedParameterJdbcTemplate(jdbcTemplate);
+	}
 }

@@ -17,6 +17,7 @@ public class Product {
 		this.productName = productName;
 		this.category = category;
 		this.price = price;
+		this.description = "empty";
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
 	}
@@ -80,5 +81,16 @@ public class Product {
 		this.updatedAt = LocalDateTime.now();
 	}
 
-
+	@Override
+	public String toString() {
+		return "Product{" +
+			"productId=" + productId +
+			", productName='" + productName + '\'' +
+			", category=" + category +
+			", price=" + price +
+			", description='" + description + '\'' +
+			", createdAt=" + createdAt +
+			", updatedAt=" + updatedAt +
+			'}';
+	}
 }
