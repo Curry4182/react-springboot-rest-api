@@ -20,28 +20,4 @@ public class GcCoffeeApplication {
 		SpringApplication.run(GcCoffeeApplication.class, args);
 	}
 
-	@Bean
-	public DataSource dataSource() throws SQLException {
-		var dataSource = DataSourceBuilder.create()
-			.url("jdbc:mysql://localhost/order_mgmt")
-			.username("root")
-			.password("root1234!")
-			.type(HikariDataSource.class)
-			.build();
-
-		dataSource.setMaximumPoolSize(100);
-		dataSource.setMinimumIdle(10);
-
-		return dataSource;
-	}
-
-	@Bean
-	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-		return new JdbcTemplate(dataSource);
-	}
-
-	@Bean
-	public NamedParameterJdbcTemplate namedParameterJdbcTemplate(JdbcTemplate jdbcTemplate) {
-		return new NamedParameterJdbcTemplate(jdbcTemplate);
-	}
 }

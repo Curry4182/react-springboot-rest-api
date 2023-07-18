@@ -4,10 +4,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
 import com.example.gccoffee.model.Category;
 import com.example.gccoffee.model.Product;
 import com.example.gccoffee.repository.ProductRepository;
 
+@Service
 public class DefaultProductService implements ProductService{
 
 	private final ProductRepository productRepository;
