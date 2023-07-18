@@ -36,8 +36,8 @@ public class productJdbcRepository implements ProductRepository{
 	@Override
 	public Product insert(Product product) {
 		int updatedProductNum = jdbcTemplate.update(
-			"INSERT INTO products(product_id, product_name, category, price, created_at, updated_at) "
-				+ "VALUES (UNHEX(REPLACE(:productId, '-', '')), :productName, :category, :price, :createdAt, :updatedAt)"
+			"INSERT INTO products(product_id, product_name, category, price, description, created_at, updated_at) "
+				+ "VALUES (UNHEX(REPLACE(:productId, '-', '')), :productName, :category, :price, :description, :createdAt, :updatedAt)"
 			, toParamMap(product)
 		);
 
@@ -50,7 +50,17 @@ public class productJdbcRepository implements ProductRepository{
 
 	@Override
 	public Product update(Product product) {
-		return null;
+		var update = jdbcTemplate.update(
+			"UPDATE products SET product_name = :productName, category = :category, price = :price, description = :description, created_at = :createdAt, updated_at = :updatedAt"
+			+ " WHERE product_id = UNHEX(REPLACE(:productId, '-', ''))",
+			toParamMap(product)
+		);
+
+		if (update != 1) {
+			throw new RuntimeException("Nothing was updated");
+		}
+
+		return product;
 	}
 
 	@Override
